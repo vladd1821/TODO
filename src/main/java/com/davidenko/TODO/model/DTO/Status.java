@@ -1,4 +1,4 @@
-package com.davidenko.TODO.model;
+package com.davidenko.TODO.model.DTO;
 
 public enum Status {
     TODO,

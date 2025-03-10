@@ -20,9 +20,9 @@ public class PersonController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<PersonDTO> getAllPersons(){
+    public ResponseEntity<List<PersonDTO>> getAllPersons() {
         List<PersonDTO> personList = personService.getAll();
-        return ResponseEntity.status(HttpStatus.OK).body((PersonDTO) personList);
+        return ResponseEntity.status(HttpStatus.OK).body(personList);
     }
 
     @GetMapping("/{id}")
@@ -33,9 +33,29 @@ public class PersonController {
 
     @PostMapping("/create")
     public ResponseEntity<Person> createPerson(@RequestBody Person person){
+        System.out.println("controller : " + person.toString());
         personService.save(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(person);
 
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<PersonDTO> fullUpdatePerson(@RequestBody PersonDTO personDTO, @PathVariable("id") Long id) {
+        try {
+            PersonDTO updatedPerson = personService.updatePerson(id, personDTO);
+            return ResponseEntity.ok(updatedPerson);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PersonDTO> partlyUpdatePerson(@PathVariable("id") Long id,@RequestBody PersonDTO personDTO){
+        try {
+            PersonDTO partlyUpdatePerson = personService.partlyUpdatePerson(id, personDTO);
+            return ResponseEntity.ok(partlyUpdatePerson);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }

@@ -5,17 +5,21 @@ import com.davidenko.TODO.model.Person;
 import com.davidenko.TODO.repository.PersonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class PersonService {
     private final PersonRepository personRepository;
     private final ModelMapper modelMapper;
 
+    @Autowired
     public PersonService(PersonRepository personRepository,ModelMapper modelMapper) {
         this.personRepository = personRepository;
         this.modelMapper = modelMapper;
@@ -26,15 +30,6 @@ public class PersonService {
        return list.stream()
                             .map(this::convertToDTO)
                             .collect(Collectors.toList());
-
-    }
-
-
-    private Person convertToPerson(PersonDTO personDTO) {
-        return modelMapper.map(personDTO,Person.class);
-    }
-    private PersonDTO convertToDTO(Person person){
-        return modelMapper.map(person, PersonDTO.class);
     }
 
     public PersonDTO getPersonById(Long id) {
@@ -45,7 +40,40 @@ public class PersonService {
     }
 
     public Person save(Person person) {
-        return personRepository.save(person);
+        personRepository.save(person);
+        return person;
 
+    }
+
+    public PersonDTO updatePerson(Long id, PersonDTO personDTO) throws Exception {
+        Person person = personRepository.findById(id).orElseThrow(()->new Exception("person not found"));
+        person.setName(personDTO.getName());
+        person.setDateBirth(personDTO.getDateBirth());
+        person.setLastName(personDTO.getLastName());
+
+        personRepository.save(person);
+        return convertToDTO(person);
+    }
+
+
+    public PersonDTO partlyUpdatePerson(Long id,PersonDTO personDTO) throws Exception {
+        Person person = personRepository.findById(id).orElseThrow(()->new Exception("person not found"));
+
+        if (personDTO.getName() != null){
+            person.setName(personDTO.getName());}
+        if (personDTO.getDateBirth()!= null){
+            person.setDateBirth(personDTO.getDateBirth());}
+        if (personDTO.getLastName() !=null){
+            person.setLastName(personDTO.getLastName());}
+
+        personRepository.save(person);
+        return convertToDTO(person);
+    }
+
+    private Person convertToPerson(PersonDTO personDTO) {
+        return modelMapper.map(personDTO,Person.class);
+    }
+    private PersonDTO convertToDTO(Person person){
+        return modelMapper.map(person, PersonDTO.class);
     }
 }
