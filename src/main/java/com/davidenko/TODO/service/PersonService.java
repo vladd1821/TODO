@@ -2,7 +2,9 @@ package com.davidenko.TODO.service;
 
 import com.davidenko.TODO.model.DTO.PersonDTO;
 import com.davidenko.TODO.model.Person;
+import com.davidenko.TODO.model.Task;
 import com.davidenko.TODO.repository.PersonRepository;
+import com.davidenko.TODO.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +19,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class PersonService {
     private final PersonRepository personRepository;
+    private final TaskRepository taskRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public PersonService(PersonRepository personRepository,ModelMapper modelMapper) {
+    public PersonService(PersonRepository personRepository,TaskRepository taskRepository, ModelMapper modelMapper) {
         this.personRepository = personRepository;
+        this.taskRepository = taskRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -75,5 +79,9 @@ public class PersonService {
     }
     private PersonDTO convertToDTO(Person person){
         return modelMapper.map(person, PersonDTO.class);
+    }
+
+    public List<Task> getAllTasksByPersonId(Long id) {
+        return taskRepository.findAllByPersonId(id);
     }
 }

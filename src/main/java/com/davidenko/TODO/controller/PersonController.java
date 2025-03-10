@@ -1,7 +1,9 @@
 package com.davidenko.TODO.controller;
 
 import com.davidenko.TODO.model.DTO.PersonDTO;
+import com.davidenko.TODO.model.DTO.TaskDTO;
 import com.davidenko.TODO.model.Person;
+import com.davidenko.TODO.model.Task;
 import com.davidenko.TODO.service.PersonService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -57,5 +59,11 @@ public class PersonController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/{id}/tasks")
+    public ResponseEntity<List<Task>> getTasksByPersonId(@PathVariable("id") Long id){
+        List<Task> taskList = personService.getAllTasksByPersonId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(taskList);
     }
 }

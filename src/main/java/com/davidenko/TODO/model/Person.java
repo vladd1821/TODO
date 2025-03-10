@@ -1,5 +1,6 @@
 package com.davidenko.TODO.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,11 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@Getter
-//@Setter
-//@ToString
 @Table(name = "person")
 public class Person {
     @Id
@@ -25,7 +21,8 @@ public class Person {
     @Column(name = "datebirth")
     private LocalDate dateBirth;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // Каскадное удаление и загрузка по запросу
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // Каскадное удаление и загрузка по запросу
+    @JsonIgnore
     private List<Task> tasks;
 
 
