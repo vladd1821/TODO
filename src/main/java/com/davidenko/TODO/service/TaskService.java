@@ -25,16 +25,18 @@ public class TaskService {
     public List<TaskDTO> getAllTasks() {
         return taskRepository.findAll().stream().map(this::convertToTaskDTO).collect(Collectors.toList());
     }
+
     public List<TaskDTO> getAllTasksByStatus(Status status) {
         return taskRepository.findAllByStatus(status).stream().map(this::convertToTaskDTO).collect(Collectors.toList());
     }
 
 
-    private Task convertToTask(TaskDTO taskDTO) {return modelMapper.map(taskDTO, Task.class);
+    private Task convertToTask(TaskDTO taskDTO) {
+        return modelMapper.map(taskDTO, Task.class);
     }
 
 
-    private TaskDTO convertToTaskDTO(Task task){
+    private TaskDTO convertToTaskDTO(Task task) {
         return modelMapper.map(task, TaskDTO.class);
     }
 
@@ -49,21 +51,20 @@ public class TaskService {
 
     public TaskDTO partlyUpdateTaskByTaskId(Long id, TaskDTO taskDTO) {
         Optional<Task> task = taskRepository.findById(id);
-        if (task.isPresent()){
+        if (task.isPresent()) {
 
             Task updateTask = task.get();
-            if (taskDTO.getTaskName()!=null)
+            if (taskDTO.getTaskName() != null)
                 updateTask.setTaskName(taskDTO.getTaskName());
-            if (taskDTO.getDescription()!=null)
+            if (taskDTO.getDescription() != null)
                 updateTask.setDescription(taskDTO.getDescription());
-            if (taskDTO.getStatus()!=null)
+            if (taskDTO.getStatus() != null)
                 updateTask.setStatus(taskDTO.getStatus());
             if (taskDTO.getExpiredAt() != null)
                 updateTask.setExpiredAt(taskDTO.getExpiredAt());
             taskRepository.save(updateTask);
             return convertToTaskDTO(updateTask);
-        }
-        else throw  new RuntimeException("task not found, id: "+ id);
+        } else throw new RuntimeException("task not found, id: " + id);
 
     }
 }

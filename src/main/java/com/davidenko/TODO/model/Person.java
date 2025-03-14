@@ -21,7 +21,8 @@ public class Person {
     @Column(name = "datebirth")
     private LocalDate dateBirth;
 
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // Каскадное удаление и загрузка по запросу
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    // Каскадное удаление и загрузка по запросу
     @JsonIgnore
     private List<Task> tasks;
 

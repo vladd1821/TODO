@@ -9,6 +9,10 @@ import com.davidenko.TODO.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,9 +89,12 @@ public class PersonService {
     private PersonDTO convertToDTO(Person person) {
         return modelMapper.map(person, PersonDTO.class);
     }
-    private Task convertToTask(TaskDTO taskDTO) {return modelMapper.map(taskDTO, Task.class);
+
+    private Task convertToTask(TaskDTO taskDTO) {
+        return modelMapper.map(taskDTO, Task.class);
     }
-    private TaskDTO convertToTaskDTO(Task task){
+
+    private TaskDTO convertToTaskDTO(Task task) {
         return modelMapper.map(task, TaskDTO.class);
     }
 
@@ -105,5 +112,14 @@ public class PersonService {
         person.getTasks().add(task);
 
         personRepository.save(person);
+    }
+
+    public Page<TaskDTO> getTasksByPersonId(Long personId, int page, int size, String sortBy, String direction) {
+
+        Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Task> taskPage = taskRepository.findAllByPersonId(personId, pageable);
+        return taskPage.map(this::convertToTaskDTO);
     }
 }

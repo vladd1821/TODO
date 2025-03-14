@@ -6,6 +6,7 @@ import com.davidenko.TODO.model.Person;
 import com.davidenko.TODO.model.Task;
 import com.davidenko.TODO.service.PersonService;
 import com.davidenko.TODO.service.TaskService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,6 +68,17 @@ public class PersonController {
     public ResponseEntity<List<Task>> getTasksByPersonId(@PathVariable("id") Long id){
         List<Task> taskList = personService.getAllTasksByPersonId(id);
         return ResponseEntity.status(HttpStatus.OK).body(taskList);
+    }
+    @GetMapping("/{personId}/pagi_sort")
+    public ResponseEntity<Page<TaskDTO>> getTasksByPerson(
+            @PathVariable Long personId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "startedAt") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Page<TaskDTO> tasks = personService.getTasksByPersonId(personId, page, size, sortBy, direction);
+        return ResponseEntity.ok(tasks);
     }
 
     @PostMapping("/{id}/create")
