@@ -1,6 +1,7 @@
 package com.davidenko.TODO.service;
 
 import com.davidenko.TODO.model.DTO.PersonDTO;
+import com.davidenko.TODO.model.DTO.TaskDTO;
 import com.davidenko.TODO.model.Person;
 import com.davidenko.TODO.model.Task;
 import com.davidenko.TODO.repository.PersonRepository;
@@ -23,17 +24,17 @@ public class PersonService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public PersonService(PersonRepository personRepository,TaskRepository taskRepository, ModelMapper modelMapper) {
+    public PersonService(PersonRepository personRepository, TaskRepository taskRepository, ModelMapper modelMapper) {
         this.personRepository = personRepository;
         this.taskRepository = taskRepository;
         this.modelMapper = modelMapper;
     }
 
     public List<PersonDTO> getAll() {
-       List<Person> list =  personRepository.findAll();
-       return list.stream()
-                            .map(this::convertToDTO)
-                            .collect(Collectors.toList());
+        List<Person> list = personRepository.findAll();
+        return list.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public PersonDTO getPersonById(Long id) {
@@ -50,7 +51,7 @@ public class PersonService {
     }
 
     public PersonDTO updatePerson(Long id, PersonDTO personDTO) throws Exception {
-        Person person = personRepository.findById(id).orElseThrow(()->new Exception("person not found"));
+        Person person = personRepository.findById(id).orElseThrow(() -> new Exception("person not found"));
         person.setName(personDTO.getName());
         person.setDateBirth(personDTO.getDateBirth());
         person.setLastName(personDTO.getLastName());
@@ -60,28 +61,49 @@ public class PersonService {
     }
 
 
-    public PersonDTO partlyUpdatePerson(Long id,PersonDTO personDTO) throws Exception {
-        Person person = personRepository.findById(id).orElseThrow(()->new Exception("person not found"));
+    public PersonDTO partlyUpdatePerson(Long id, PersonDTO personDTO) throws Exception {
+        Person person = personRepository.findById(id).orElseThrow(() -> new Exception("person not found"));
 
-        if (personDTO.getName() != null){
-            person.setName(personDTO.getName());}
-        if (personDTO.getDateBirth()!= null){
-            person.setDateBirth(personDTO.getDateBirth());}
-        if (personDTO.getLastName() !=null){
-            person.setLastName(personDTO.getLastName());}
+        if (personDTO.getName() != null) {
+            person.setName(personDTO.getName());
+        }
+        if (personDTO.getDateBirth() != null) {
+            person.setDateBirth(personDTO.getDateBirth());
+        }
+        if (personDTO.getLastName() != null) {
+            person.setLastName(personDTO.getLastName());
+        }
 
         personRepository.save(person);
         return convertToDTO(person);
     }
 
     private Person convertToPerson(PersonDTO personDTO) {
-        return modelMapper.map(personDTO,Person.class);
+        return modelMapper.map(personDTO, Person.class);
     }
-    private PersonDTO convertToDTO(Person person){
+
+    private PersonDTO convertToDTO(Person person) {
         return modelMapper.map(person, PersonDTO.class);
     }
+    private Task convertToTask(TaskDTO taskDTO) {return modelMapper.map(taskDTO, Task.class);
+    }
+    private TaskDTO convertToTaskDTO(Task task){
+        return modelMapper.map(task, TaskDTO.class);
+    }
+
 
     public List<Task> getAllTasksByPersonId(Long id) {
         return taskRepository.findAllByPersonId(id);
+    }
+
+    public void createTaskToPersonById(Long id, TaskDTO taskDTO) {
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Person not found with id: " + id));
+        Task task = convertToTask(taskDTO);
+
+        task.setPerson(person);
+        person.getTasks().add(task);
+
+        personRepository.save(person);
     }
 }

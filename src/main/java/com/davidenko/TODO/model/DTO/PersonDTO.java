@@ -4,12 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class PersonDTO {
     private String name;
     private String lastName;
     private LocalDate dateBirth;
+    private List<TaskDTO> tasks;
 
+//тесты только на сервис
+//    сортировку и пагинацию
     public String getName() {
         return name;
     }
@@ -32,6 +36,14 @@ public class PersonDTO {
 
     public void setDateBirth(LocalDate dateBirth) {
         this.dateBirth = dateBirth;
+    }
+
+    public List<TaskDTO> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskDTO> tasks) {
+        this.tasks = tasks;
     }
 
     @Override

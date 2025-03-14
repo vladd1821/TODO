@@ -5,7 +5,7 @@ import com.davidenko.TODO.model.DTO.TaskDTO;
 import com.davidenko.TODO.model.Person;
 import com.davidenko.TODO.model.Task;
 import com.davidenko.TODO.service.PersonService;
-import org.springframework.http.HttpEntity;
+import com.davidenko.TODO.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,11 @@ import java.util.List;
 @RequestMapping("/person")
 public class PersonController {
     private final PersonService personService;
+    private final TaskService taskService;
 
-    public PersonController(PersonService personService) {
+    public PersonController(PersonService personService,TaskService taskService) {
         this.personService = personService;
+        this.taskService = taskService;
     }
 
     @GetMapping("/all")
@@ -66,4 +68,21 @@ public class PersonController {
         List<Task> taskList = personService.getAllTasksByPersonId(id);
         return ResponseEntity.status(HttpStatus.OK).body(taskList);
     }
+
+    @PostMapping("/{id}/create")
+    public ResponseEntity<TaskDTO> createTaskByPersonId(@PathVariable Long id, @RequestBody TaskDTO taskDTO){
+        personService.createTaskToPersonById(id, taskDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskDTO);
+
+    }
+
+    @PatchMapping("/task/{id}/editTask")
+    public ResponseEntity<TaskDTO> partlyUpdateTaskByTaskId(@PathVariable Long id, @RequestBody TaskDTO taskDTO){
+        TaskDTO updatedTask = taskService.partlyUpdateTaskByTaskId(id, taskDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
+    }
+
+
+
 }
