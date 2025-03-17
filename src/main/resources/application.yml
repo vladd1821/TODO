@@ -4,6 +4,7 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/todo_db
+#    url: jdbc:postgresql://todo_db:5432/todo_db
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
