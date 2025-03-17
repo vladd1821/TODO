@@ -1,4 +1,4 @@
-package com.davidenko.TODO;
+package com.davidenko.TODO.service;
 
 import com.davidenko.TODO.model.DTO.PersonDTO;
 import com.davidenko.TODO.model.DTO.Status;
@@ -86,6 +86,7 @@ public class PersonServiceTest {
         assertEquals(1, result.size());
         assertEquals("John", result.get(0).getName());
         verify(personRepository, times(1)).findAll();
+        verify(modelMapper, times(1)).map(person, PersonDTO.class);
     }
 
     @Test
