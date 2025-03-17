@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Person {
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     // Каскадное удаление и загрузка по запросу
     @JsonIgnore
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
 
 
     public Person() {
