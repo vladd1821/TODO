@@ -6,6 +6,7 @@ import com.davidenko.TODO.model.Person;
 import com.davidenko.TODO.model.Task;
 import com.davidenko.TODO.service.PersonService;
 import com.davidenko.TODO.service.TaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/person")
+@Slf4j
 public class PersonController {
     private final PersonService personService;
     private final TaskService taskService;
@@ -38,7 +40,7 @@ public class PersonController {
 
     @PostMapping("/create")
     public ResponseEntity<Person> createPerson(@RequestBody Person person){
-        System.out.println("controller : " + person.toString());
+//        log.info("controller : " + person.toString());
         personService.save(person);
         return ResponseEntity.status(HttpStatus.CREATED).body(person);
 
